@@ -32,11 +32,14 @@ $parser->setExamples([
 
 $columns   = null;
 $delimiter = null;
+$quotes    = null;
 
 $parser->addFlag('help', [ 'alias' => '-h' ], 'usage');
 $parser->addFlag('verbose', [ 'alias' => '-v' ]);
+$parser->addFlag('php', [ 'alias' => '-p' ]);
 $parser->addFlagVar('columns', $columns, [ 'alias' => '-c', 'has_value' => true, 'required' => true ]);
 $parser->addFlagVar('delimiter', $delimiter, [ 'alias' => '-d', 'has_value' => true, 'default' => " " ]);
+$parser->addFlagVar('quotes', $quotes, [ 'alias' => '-q', 'has_value' => true, 'default' => "\"" ]);
 $parser->addArgument('file', [ 'required' => false ]);
 
 try {
@@ -71,6 +74,7 @@ try {
 
     $rows    = 0;
     $buffers = null;
+    $column  = '';
 
     $delimiter = str_replace('\r', "\r", $delimiter);
     $delimiter = str_replace('\n', "\n", $delimiter);
@@ -81,19 +85,29 @@ try {
 
         if (!$buffers)
             $buffers = [];
-        $buffers[] = $line;
+        $column .= $line;
+
+        if ($rows == 1 && $parser['php']) {
+            if (1 != preg_match('/}$/', $column)) {
+                continue;
+            }
+        }
+
+        $buffers[] = $quotes . $column . $quotes;
+        $column    = '';
 
         $rows = $rows + 1;
 
         if ($columns == $rows) {
             echo implode($delimiter, $buffers), PHP_EOL;
             $rows = 0;
-            unset($buffers);
+            $buffers = null;
         }
     }
     fclose($fp);
 
-    echo implode($delimiter, $buffers), PHP_EOL;
+    if ($buffers != null)
+        echo implode($delimiter, $buffers), PHP_EOL;
 
 } catch (\Exception $e) {
     throw $e;
