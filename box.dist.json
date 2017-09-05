@@ -1,0 +1,19 @@
+{
+  "chmod": "0755",
+  "files": [
+    "vendor/autoload.php"
+  ],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [ "tests" ],
+      "in": [
+        "vendor/chh",
+        "vendor/composer"
+      ]
+    }
+  ],
+  "main": "bin/columnize.php",
+  "output": "bin/columnize.phar",
+  "stub": true
+}

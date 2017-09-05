@@ -1,0 +1,14 @@
+{
+    "name": "iwai/columnize-php",
+    "authors":[
+        { "name":"Yuji Iwai", "email":"iwai.ug@gmail.com" }
+    ],
+    "require": {
+        "chh/optparse": "0.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    }
+}
