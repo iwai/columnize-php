@@ -91,6 +91,9 @@ try {
             if (1 != preg_match('/}$/', $column)) {
                 continue;
             }
+            $data = unserialize($column);
+            $data = str_replace(["\n"], '', $data);
+            $column = serialize($data);
         }
 
         $buffers[] = $quotes . $column . $quotes;
